@@ -6,11 +6,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
 import javax.annotation.Resource;
 
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @WebServlet("/StudentControllerServlet")
@@ -82,8 +86,9 @@ public class StudentControllerServlet extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
+        String studentImg = request.getParameter("studentImg");
 
-        Student theStudent = new Student(id, firstName, lastName, email);
+        Student theStudent = new Student(id, firstName, lastName, email, studentImg);
 
         studentDbUtil.updateStudent(theStudent);
         listStudents(request, response);
@@ -104,12 +109,40 @@ public class StudentControllerServlet extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
+        String studentImg = request.getParameter("studentImg");
 
-        Student theStudent = new Student(firstName, lastName, email);
+        Student theStudent = new Student(firstName, lastName, email, studentImg);
 
         studentDbUtil.addStudent(theStudent);
 
         listStudents(request, response);
     }
 
+//    private  String uploadFile(Part filePart, String fileName, String uploadDirectory) throws IOException{
+//        String filePath = uploadDirectory + File.separator + fileName;
+//        try(InputStream inputStream = filePart.getInputStream();
+//            FileOutputStream outputStream = new FileOutputStream(filePath)){
+//            byte[] buffer = new byte[8192];
+//            int bytesRead;
+//
+//            while ((bytesRead = inputStream.read(buffer)) != -1){
+//                outputStream.write(buffer, 0 , bytesRead);
+//            }
+//
+//
+//        }
+//        return filePath;
+//    }
+//
+//    private String getFileName(Part part){
+//        String contentDisposition = part.getHeader("content-disposition");
+//        String[] elements = contentDisposition.split(";");
+//
+//        for (String element : elements){
+//            if (element.trim().startsWith("filename")){
+//                return element.substring(element.indexOf("=") + 1 ).trim().replace("\"","");
+//            }
+//        }
+//        return "";
+//    }
 }

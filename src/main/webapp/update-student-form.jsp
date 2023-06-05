@@ -35,6 +35,10 @@
 						<td><input type="text" name="email" value="${THE_STUDENT.email}"></td>
 					</tr>
 					<tr>
+						<td><label>Student Image: </label></td>
+						<td><input type="file" name="studentImg"></td>
+					</tr>
+					<tr>
 						<td><label></label></td>
 						<td><input type="submit" value="Save" class="save"></td>
 					</tr>

@@ -40,8 +40,9 @@ public class StudentDbUtil {
                 String firstName = myRs.getString("first_name");
                 String lastName = myRs.getString("last_Name");
                 String email = myRs.getString("email");
+                String studentImg = myRs.getString("studentImg");
 
-                Student tempStudent = new Student(id, firstName, lastName, email);
+                Student tempStudent = new Student(id, firstName, lastName, email, studentImg);
 
                 students.add(tempStudent);
             }
@@ -81,13 +82,14 @@ public class StudentDbUtil {
 
             myConn = DriverManager.getConnection(url, username, password);
 
-            String sql = "insert into student" + "(first_name, last_name, email)" + "values (?, ?, ?)";
+            String sql = "insert into student" + "(first_name, last_name, email, studentImg)" + "values (?, ?, ?, ?)";
 
             myStmt = myConn.prepareStatement(sql);
 
             myStmt.setString(1, theStudent.getFirstName());
             myStmt.setString(2, theStudent.getLastName());
             myStmt.setString(3, theStudent.getEmail());
+            myStmt.setString(4,theStudent.getStudentImg());
 
             myStmt.execute();
         }
@@ -125,8 +127,9 @@ public class StudentDbUtil {
                 String firstName = myRs.getString("first_name");
                 String lastName = myRs.getString("last_name");
                 String email = myRs.getString("email");
+                String studentImg = myRs.getString("studentImg");
 
-                theStudent = new Student(studentId, firstName, lastName, email);
+                theStudent = new Student(studentId, firstName, lastName, email, studentImg);
             }
             else {
                 throw new Exception("Could not find student id: " + studentId);
@@ -149,14 +152,15 @@ public class StudentDbUtil {
             Class.forName("com.mysql.jdbc.Driver");
             myConn = DriverManager.getConnection(url, username, password);
 
-            String sql = "update student " + "set first_name=?, last_name=?, email=?" + "where id=?";
+            String sql = "update student " + "set first_name=?, last_name=?, email=?, studentImg=?" + "where id=?";
 
             myStmt = myConn.prepareStatement(sql);
 
             myStmt.setString(1, theStudent.getFirstName());
             myStmt.setString(2, theStudent.getLastName());
             myStmt.setString(3, theStudent.getEmail());
-            myStmt.setInt(4, theStudent.getId());
+            myStmt.setString(4, theStudent.getStudentImg());
+            myStmt.setInt(5, theStudent.getId());
 
             myStmt.execute();
         }
