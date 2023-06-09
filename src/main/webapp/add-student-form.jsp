@@ -14,7 +14,7 @@
 
 <div id="container">
 	<h3>Add Student</h3>
-	<form action="StudentControllerServlet" method="GET">
+	<form action="StudentControllerServlet" method="POST" enctype="multipart/form-data">
 		<input type="hidden" value="ADD" name="command">
 		<table>
 			<tbody>
@@ -32,7 +32,7 @@
 				</tr>
 				<tr>
 					<td><label>Student Image:</label></td>
-					<td><input type="file" name="studentImg"></td>
+					<td><input type="file" name="studentImg" id="studentImg"></td>
 				</tr>
 				<tr>
 					<td><label></label></td>

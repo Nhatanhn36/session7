@@ -35,7 +35,7 @@
                     <c:param name="studentId" value="${tempStudent.id}"/>
                 </c:url>
                 <tr>
-                    <td><img src="img/${tempStudent.studentImg}" alt="image" id="student_img"></td>
+                    <td><img src="${tempStudent.studentImg}" alt="image" id="student_img"></td>
                     <td>${tempStudent.firstName}</td>
                     <td>${tempStudent.lastName}</td>
                     <td>${tempStudent.email}</td>

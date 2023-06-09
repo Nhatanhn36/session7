@@ -2,6 +2,7 @@ package StudentManage;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @WebServlet("/StudentControllerServlet")
+@MultipartConfig
 public class StudentControllerServlet extends HttpServlet {
     private static final long serialVersionUID =  1L;
 
@@ -64,6 +66,10 @@ public class StudentControllerServlet extends HttpServlet {
         }
     }
 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
+
     private void listStudents(HttpServletRequest request, HttpServletResponse response) throws Exception {
         List<Student> students = studentDbUtil.getStudents();
 
@@ -86,12 +92,17 @@ public class StudentControllerServlet extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
-        String studentImg = request.getParameter("studentImg");
+
+        Part filePart = request.getPart("studentImg");
+        String fileName = getFileName(filePart);
+        String uploadDirectory = getServletContext().getRealPath("/img");
+        String imagePath = uploadFile(filePart, fileName, uploadDirectory);
+        String studentImg = "img/" + fileName;
 
         Student theStudent = new Student(id, firstName, lastName, email, studentImg);
 
         studentDbUtil.updateStudent(theStudent);
-        listStudents(request, response);
+        response.sendRedirect(request.getContextPath() + "/StudentControllerServlet");
     }
 
     public void loadStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -109,40 +120,45 @@ public class StudentControllerServlet extends HttpServlet {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String email = request.getParameter("email");
-        String studentImg = request.getParameter("studentImg");
+
+        Part filePart = request.getPart("studentImg");
+        String fileName = getFileName(filePart);
+        String uploadDirectory = getServletContext().getRealPath("/img");
+        String imagePath = uploadFile(filePart, fileName, uploadDirectory);
+        String studentImg = "img/" + fileName;
 
         Student theStudent = new Student(firstName, lastName, email, studentImg);
 
         studentDbUtil.addStudent(theStudent);
 
-        listStudents(request, response);
+        response.sendRedirect(request.getContextPath() + "/StudentControllerServlet");
     }
 
-//    private  String uploadFile(Part filePart, String fileName, String uploadDirectory) throws IOException{
-//        String filePath = uploadDirectory + File.separator + fileName;
-//        try(InputStream inputStream = filePart.getInputStream();
-//            FileOutputStream outputStream = new FileOutputStream(filePath)){
-//            byte[] buffer = new byte[8192];
-//            int bytesRead;
-//
-//            while ((bytesRead = inputStream.read(buffer)) != -1){
-//                outputStream.write(buffer, 0 , bytesRead);
-//            }
-//
-//
-//        }
-//        return filePath;
-//    }
-//
-//    private String getFileName(Part part){
-//        String contentDisposition = part.getHeader("content-disposition");
-//        String[] elements = contentDisposition.split(";");
-//
-//        for (String element : elements){
-//            if (element.trim().startsWith("filename")){
-//                return element.substring(element.indexOf("=") + 1 ).trim().replace("\"","");
-//            }
-//        }
-//        return "";
-//    }
+    private  String uploadFile(Part filePart, String fileName, String uploadDirectory) throws IOException{
+        String filePath = uploadDirectory + File.separator + fileName;
+        try(InputStream inputStream = filePart.getInputStream();
+            FileOutputStream outputStream = new FileOutputStream(filePath)){
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1){
+                outputStream.write(buffer, 0 , bytesRead);
+            }
+
+
+        }
+        return filePath;
+    }
+
+    private String getFileName(Part part){
+        String contentDisposition = part.getHeader("content-disposition");
+        String[] elements = contentDisposition.split(";");
+
+        for (String element : elements){
+            if (element.trim().startsWith("filename")){
+                return element.substring(element.indexOf("=") + 1 ).trim().replace("\"","");
+            }
+        }
+        return "";
+    }
 }
